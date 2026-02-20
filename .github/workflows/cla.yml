@@ -26,7 +26,7 @@ jobs:
           path-to-signatures: "signatures/cla.json"
           path-to-document: "https://github.com/${{ github.repository }}/blob/main/CLA.md"
           branch: "main"
-          allowlist: dependabot[bot],github-actions[bot],renovate[bot],allcontributors[bot],imgbot[bot],ugurkocde
+          allowlist: dependabot[bot],github-actions[bot],renovate[bot],allcontributors[bot],imgbot[bot],ugurkocde,google-labs-jules[bot],Harukisan01
           custom-notsigned-prcomment: |
             Welcome, and thanks for this PR!
 
