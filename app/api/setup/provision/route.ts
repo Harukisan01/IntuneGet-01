@@ -17,9 +17,6 @@ interface GraphSecret {
     endDateTime: string;
 }
 
-interface GraphPermission {
-    id: string;
-}
 
 // ─── Costanti ─────────────────────────────────────────────────────────────────
 

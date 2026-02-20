@@ -2,19 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const PROTECTED_ROUTES = ['/dashboard'];
 
-// Rotte escluse dal redirect di setup (la pagina setup stessa e le sue API)
+// Rotte escluse dal redirect di setup
 const SETUP_EXCLUDED = ['/setup', '/api/setup', '/_next', '/favicon', '/icons'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ── SETUP AUTOMATICO ──────────────────────────────────────────────────────
-  // Se NEXT_PUBLIC_AZURE_AD_CLIENT_ID non è configurata, l'app non può
-  // autenticarsi. Redirect a /setup finché non viene configurata.
+  // NOTA: NEXT_PUBLIC_* vars sono inlined a build-time e risultano vuote
+  // nell'Edge/Node middleware a runtime. Usiamo una variabile server-side
+  // (AZURE_CLIENT_SECRET) come indicatore che l'app è configurata.
   const isSetupRoute = SETUP_EXCLUDED.some((r) => pathname.startsWith(r));
   if (!isSetupRoute) {
-    const clientId = process.env.NEXT_PUBLIC_AZURE_AD_CLIENT_ID;
-    if (!clientId || clientId.trim() === '') {
+    const isConfigured =
+      process.env.AZURE_CLIENT_SECRET ||
+      process.env.AZURE_AD_CLIENT_SECRET;
+
+    if (!isConfigured) {
       return NextResponse.redirect(new URL('/setup', request.url));
     }
   }
