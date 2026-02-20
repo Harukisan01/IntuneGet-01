@@ -5,7 +5,8 @@ import {
 } from "@azure/msal-browser";
 import { getPublicClientId } from "@/lib/runtime-config";
 
-export const msalConfig: Configuration = {
+// Configuration is now created dynamically to ensure runtime env vars are picked up
+export const getMsalConfig = (): Configuration => ({
   auth: {
     clientId: getPublicClientId(),
     authority: "https://login.microsoftonline.com/organizations",
@@ -36,7 +37,7 @@ export const msalConfig: Configuration = {
       },
     },
   },
-};
+});
 
 // Scopes for user sign-in (delegated permissions)
 // Note: DeviceManagementApps.ReadWrite.All is an APPLICATION permission
@@ -86,7 +87,7 @@ let msalInstance: PublicClientApplication | null = null;
 
 export function getMsalInstance(): PublicClientApplication {
   if (!msalInstance) {
-    msalInstance = new PublicClientApplication(msalConfig);
+    msalInstance = new PublicClientApplication(getMsalConfig());
   }
   return msalInstance;
 }

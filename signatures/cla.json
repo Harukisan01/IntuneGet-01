@@ -7,6 +7,22 @@
       "created_at": "2026-02-16T12:50:10Z",
       "repoId": 988380262,
       "pullRequestNo": 42
+    },
+    {
+      "name": "google-labs-jules[bot]",
+      "id": 161369871,
+      "comment_id": 1,
+      "created_at": "2026-02-20T08:04:49Z",
+      "repoId": 988380262,
+      "pullRequestNo": 1
+    },
+    {
+      "name": "Harukisan01",
+      "id": 88734581,
+      "comment_id": 2,
+      "created_at": "2026-02-20T08:04:49Z",
+      "repoId": 988380262,
+      "pullRequestNo": 1
     }
   ]
 }
