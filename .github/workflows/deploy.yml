@@ -1,0 +1,43 @@
+name: Meteora Next.js Build & Deploy
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+env:
+  ACR_NAME: 'acrmeteoraintuneget'
+  IMAGE_NAME: 'intuneget'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del codice
+      uses: actions/checkout@v3
+
+    - name: Login su Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.ACR_NAME }}.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build Docker Image (Iniezione Variabili NEXT_PUBLIC)
+      run: |
+        docker build \
+          --build-arg NEXT_PUBLIC_AZURE_AD_CLIENT_ID="${{ secrets.AZURE_CLIENT_ID }}" \
+          --build-arg NEXT_PUBLIC_AZURE_AD_TENANT_ID="${{ secrets.AZURE_TENANT_ID }}" \
+          --build-arg NEXT_PUBLIC_URL="https://app-meteora-intuneget.azurewebsites.net" \
+          -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest .
+
+    - name: Push Docker Image su ACR
+      run: docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
+
+    - name: Deploy su Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'app-meteora-intuneget'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: '${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest'
