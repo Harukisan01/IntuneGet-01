@@ -14,7 +14,16 @@ COPY . .
 
 # Build application
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Dichiara i build-args (passati da deploy.yml via --build-arg)
+# Senza ARG qui, Docker ignora silenziosamente i --build-arg e Next.js bake stringa vuota
+ARG NEXT_PUBLIC_AZURE_AD_CLIENT_ID
+ARG NEXT_PUBLIC_URL
+ENV NEXT_PUBLIC_AZURE_AD_CLIENT_ID=$NEXT_PUBLIC_AZURE_AD_CLIENT_ID
+ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
+
 RUN npm run build
+
 
 # Production stage
 FROM node:20-alpine AS runner
