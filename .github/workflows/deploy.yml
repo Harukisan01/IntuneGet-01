@@ -24,13 +24,14 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Build Docker Image (Iniezione Variabili NEXT_PUBLIC)
+    - name: Build Docker Image (Iniezione Client ID MSAL)
       run: |
         docker build \
           --build-arg NEXT_PUBLIC_AZURE_AD_CLIENT_ID="${{ secrets.AZURE_CLIENT_ID }}" \
-          --build-arg NEXT_PUBLIC_AZURE_AD_TENANT_ID="${{ secrets.AZURE_TENANT_ID }}" \
           --build-arg NEXT_PUBLIC_URL="https://app-meteora-intuneget.azurewebsites.net" \
           -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest .
+        # Nota: AZURE_CLIENT_ID deve contenere il valore: c96158cc-e1ec-4feb-a93d-732596b19902
+        # NEXT_PUBLIC_AZURE_AD_TENANT_ID NON serve — il tenant viene letto dal token JWT a runtime
 
     - name: Push Docker Image su ACR
       run: docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
